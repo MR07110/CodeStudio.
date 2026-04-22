@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Code Studio - Kod Tartiblash</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='-10 -10 120 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='fGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2360a5fa' /%3E%3Cstop offset='100%25' style='stop-color:%23a855f7' /%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='48' stroke='url(%23fGrad)' stroke-width='10' /%3E%3Cpath d='M30 35L12 50L30 65M70 35L88 50L70 65' stroke='url(%23fGrad)' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M58 25L42 75' stroke='url(%23fGrad)' stroke-width='12' stroke-linecap='round'/%3E%3C/svg%3E">
+    <title>Code Studio</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='-10 -10 120 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='fGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2360a5fa' /%3E%3Cstop offset='100%25' style='stop-color:%23a855f7' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='48' stroke='url(%23fGrad)' stroke-width='10' /%3E%3Cpath d='M30 35L12 50L30 65M70 35L88 50L70 65' stroke='url(%23fGrad)' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M58 25L42 75' stroke='url(%23fGrad)' stroke-width='12' stroke-linecap='round'/%3E%3C/svg%3E">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/theme/dracula.min.css">
@@ -26,8 +26,6 @@
             --color-primary-glow: rgba(59, 130, 246, 0.4);
             --color-danger: #ef4444;
             --color-danger-bg: rgba(239, 68, 68, 0.1);
-            --color-success: #10b981;
-            --color-warning: #f59e0b;
             
             --text-main: #f3f4f6;
             --text-dim: #9ca3af;
@@ -41,7 +39,6 @@
             --z-nav: 2000;
             --z-modal: 10000;
             --z-splash: 100000;
-            --z-magic: 10050;
         }
 
         /* =========================================
@@ -123,84 +120,7 @@
         }
 
         /* =========================================
-           4. MAGIC WAND (SEHIRLI TAYOQCHA)
-        ========================================= */
-        .magic-wand {
-            position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: var(--z-magic);
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            opacity: 0;
-            transform: scale(0) rotate(0deg);
-            pointer-events: none;
-        }
-        
-        .magic-wand.show {
-            opacity: 1;
-            transform: scale(1) rotate(0deg);
-            pointer-events: auto;
-        }
-        
-        .magic-wand:hover {
-            transform: scale(1.1) rotate(15deg);
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
-        }
-        
-        .magic-wand:active {
-            transform: scale(0.95);
-        }
-        
-        .magic-wand svg {
-            width: 28px;
-            height: 28px;
-            stroke: white;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-        }
-        
-        @keyframes wandGlow {
-            0%, 100% { box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4); }
-            50% { box-shadow: 0 4px 30px rgba(102, 126, 234, 0.8); }
-        }
-        
-        .magic-wand.show {
-            animation: wandGlow 2s infinite;
-        }
-        
-        /* Formatlash animatsiyasi */
-        @keyframes magicSparkle {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-        
-        .magic-sparkle {
-            position: fixed;
-            width: 100px;
-            height: 100px;
-            pointer-events: none;
-            z-index: var(--z-magic);
-        }
-        
-        /* Desktopda joylashuv */
-        @media (min-width: 900px) {
-            .magic-wand {
-                bottom: 30px;
-                right: 30px;
-            }
-        }
-
-        /* =========================================
-           5. LAYOUT & SCREENS
+           4. LAYOUT & SCREENS
         ========================================= */
         
         /* --- Splash Screen --- */
@@ -218,7 +138,7 @@
             position: fixed; inset: 0; display: flex; justify-content: center; align-items: center;
             z-index: var(--z-modal); 
             background: rgba(0, 0, 0, 0.4); 
-            backdrop-filter: blur(4px);
+            backdrop-filter: blur(4px); /* Ozgina xiralik qo'shildi */
             -webkit-backdrop-filter: blur(4px);
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
@@ -226,7 +146,7 @@
         
         .modal-box { 
             background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(6px);
+            backdrop-filter: blur(6px); /* Karta orqasi ham yengil xira qilinadi */
             -webkit-backdrop-filter: blur(6px);
             padding: 2.5rem; border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.1); 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 90%; max-width: 380px; text-align: center; 
@@ -291,32 +211,8 @@
         .CodeMirror-dialog button { background: var(--border-glass); border: none; color: #fff; padding: 0.4rem 0.8rem; border-radius: 0.4rem; cursor: pointer; font-size: 0.75rem; transition: 0.2s;}
         .CodeMirror-dialog button:hover { background: var(--color-primary); }
 
-        /* Notification */
-        .notification-toast {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(16, 185, 129, 0.95);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            font-size: 0.875rem;
-            font-weight: 500;
-            z-index: var(--z-magic);
-            animation: slideUp 0.3s ease;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            white-space: nowrap;
-        }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-
         /* =========================================
-           6. RESPONSIVE (DESKTOP)
+           5. RESPONSIVE (DESKTOP)
         ========================================= */
         .desktop-only { display: none; }
         
@@ -338,13 +234,6 @@
             .resizer::after { content: ''; width: 4px; height: 40px; border-radius: 2px; background: rgba(255, 255, 255, 0.15); transition: background var(--transition), height 0.3s; }
             .resizer:hover::after, .resizer.active::after { background: var(--color-primary); height: 60px; box-shadow: 0 0 10px var(--color-primary-glow); }
             body.resizing { user-select: none; cursor: col-resize; }
-            
-            .notification-toast {
-                bottom: 100px;
-                right: 100px;
-                left: auto;
-                transform: none;
-            }
         }
     </style>
 </head>
@@ -381,18 +270,6 @@
         <button class="btn" style="background:none; border:none; margin-top:1rem; font-size:0.8rem; color:var(--text-dim);" onclick="authAction('signup')">Ro'yxatdan o'tish</button>
     </div>
 </div>
-
-<!-- SEHIRLI TAYOQCHA (MAGIC WAND) -->
-<button class="magic-wand" id="magicWand" onclick="formatCodeWithMagic()">
-    <svg viewBox="0 0 24 24" fill="none">
-        <path d="M14.5 3L15 5L17 5.5L15 6L14.5 8L14 6L12 5.5L14 5L14.5 3Z" fill="currentColor"/>
-        <path d="M20 9L20.5 10.5L22 11L20.5 11.5L20 13L19.5 11.5L18 11L19.5 10.5L20 9Z" fill="currentColor"/>
-        <path d="M8 5L8.5 6.5L10 7L8.5 7.5L8 9L7.5 7.5L6 7L7.5 6.5L8 5Z" fill="currentColor"/>
-        <path d="M5 14L3.5 15.5L5 17L6.5 15.5L5 14Z" fill="currentColor"/>
-        <path d="M17 16L15.5 17.5L17 19L18.5 17.5L17 16Z" fill="currentColor"/>
-        <path d="M12 11L9 14L12 17L15 14L12 11Z" fill="currentColor" opacity="0.5"/>
-    </svg>
-</button>
 
 <header class="header">
     <div class="header__logo">
@@ -493,8 +370,6 @@
 
     let user = null;
     let allRepos = [];
-    let lastFormattedCode = ''; // Oxirgi tartiblangan kodni saqlash
-    let isCodeFormatted = false; // Kod tartiblanganligini tekshirish
 
     // CodeMirror Sozlamalari
     window.editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
@@ -505,235 +380,10 @@
         lineWrapping: true
     });
 
-    // Kodni formatlash funksiyasi
-    window.formatCodeWithMagic = () => {
-        const currentCode = editor.getValue();
-        
-        // Agar kod allaqachon tartiblangan bo'lsa, hech narsa qilma
-        if (isCodeFormatted && currentCode === lastFormattedCode) {
-            showNotification("✨ Kod allaqachon tartiblangan!", "#f59e0b");
-            hideMagicWand();
-            return;
-        }
-        
-        // Sparkle effekti qo'shish
-        createSparkleEffect();
-        
-        // Formatlash jarayoni
-        const formattedCode = formatHTMLCode(currentCode);
-        
-        if (formattedCode !== currentCode) {
-            editor.setValue(formattedCode);
-            lastFormattedCode = formattedCode;
-            isCodeFormatted = true;
-            updatePreview();
-            showNotification("🎉 Kod muvaffaqiyatli tartiblandi!", "#10b981");
-            // 3 sekunddan keyin tayoqchani yashirish
-            setTimeout(() => hideMagicWand(), 3000);
-        } else {
-            isCodeFormatted = true;
-            lastFormattedCode = currentCode;
-            showNotification("✅ Kod allaqachon to'g'ri formatlangan!", "#10b981");
-            setTimeout(() => hideMagicWand(), 2000);
-        }
-    };
-    
-    // Sparkle effekti yaratish
-    function createSparkleEffect() {
-        const wand = document.getElementById('magicWand');
-        const rect = wand.getBoundingClientRect();
-        
-        for (let i = 0; i < 30; i++) {
-            const sparkle = document.createElement('div');
-            sparkle.className = 'magic-sparkle';
-            sparkle.innerHTML = '✨';
-            sparkle.style.position = 'fixed';
-            sparkle.style.left = rect.left + rect.width/2 + (Math.random() - 0.5) * 100 + 'px';
-            sparkle.style.top = rect.top + rect.height/2 + (Math.random() - 0.5) * 100 + 'px';
-            sparkle.style.fontSize = (Math.random() * 20 + 10) + 'px';
-            sparkle.style.opacity = '1';
-            sparkle.style.pointerEvents = 'none';
-            sparkle.style.zIndex = '100000';
-            sparkle.style.transition = 'all 0.5s ease';
-            document.body.appendChild(sparkle);
-            
-            setTimeout(() => {
-                sparkle.style.transform = `translate(${(Math.random() - 0.5) * 100}px, ${(Math.random() - 0.5) * 100 - 50}px)`;
-                sparkle.style.opacity = '0';
-            }, 10);
-            
-            setTimeout(() => sparkle.remove(), 500);
-        }
-    }
-    
-    // HTML kodni formatlash
-    function formatHTMLCode(code) {
-        let formatted = '';
-        let indent = 0;
-        let inTag = false;
-        let inString = false;
-        let stringChar = '';
-        
-        for (let i = 0; i < code.length; i++) {
-            let char = code[i];
-            
-            // String ichida ekanligini tekshirish
-            if ((char === '"' || char === "'") && code[i-1] !== '\\') {
-                if (!inString) {
-                    inString = true;
-                    stringChar = char;
-                } else if (char === stringChar) {
-                    inString = false;
-                }
-                formatted += char;
-                continue;
-            }
-            
-            if (inString) {
-                formatted += char;
-                continue;
-            }
-            
-            // Teg ochilishini aniqlash
-            if (char === '<') {
-                if (formatted.length > 0 && formatted[formatted.length-1] !== '\n') {
-                    formatted += '\n';
-                }
-                
-                // Yopiluvchi teglar uchun indentni kamaytirish
-                if (code[i+1] === '/') {
-                    indent = Math.max(0, indent - 1);
-                    formatted += '  '.repeat(indent);
-                } else {
-                    formatted += '  '.repeat(indent);
-                }
-                
-                inTag = true;
-                formatted += char;
-            } 
-            else if (char === '>') {
-                formatted += char;
-                inTag = false;
-                
-                // O'z-o'zidan yopiluvchi bo'lmagan teglar uchun indentni oshirish
-                if (!isSelfClosingTag(getTagNameFromPosition(code, i))) {
-                    indent++;
-                }
-                
-                if (i+1 < code.length && code[i+1] !== '<') {
-                    formatted += '\n';
-                }
-            }
-            else {
-                formatted += char;
-            }
-        }
-        
-        // Qo'shimcha tozalash
-        formatted = formatted.replace(/\n\s*\n/g, '\n');
-        formatted = formatted.replace(/>\s+</g, '>\n<');
-        
-        return formatted.trim();
-    }
-    
-    function getTagNameFromPosition(html, closePos) {
-        let tagStart = closePos;
-        while (tagStart >= 0 && html[tagStart] !== '<') tagStart--;
-        if (tagStart < 0) return '';
-        
-        let tagEnd = closePos;
-        let tagContent = html.substring(tagStart+1, tagEnd);
-        let tagName = tagContent.split(/\s/)[0];
-        
-        return tagName.toLowerCase();
-    }
-    
-    function isSelfClosingTag(tagName) {
-        const selfClosing = ['br', 'hr', 'img', 'input', 'meta', 'link', 'area', 'base', 'col', 'embed', 'param', 'source', 'track', 'wbr'];
-        return selfClosing.includes(tagName);
-    }
-    
-    // Tayoqchani ko'rsatish
-    function showMagicWand() {
-        const wand = document.getElementById('magicWand');
-        if (wand && !wand.classList.contains('show')) {
-            wand.classList.add('show');
-        }
-    }
-    
-    // Tayoqchani yashirish
-    function hideMagicWand() {
-        const wand = document.getElementById('magicWand');
-        if (wand && wand.classList.contains('show')) {
-            wand.classList.remove('show');
-        }
-    }
-    
-    // Kod tartibli yozilayotganligini tekshirish
-    function checkCodeFormatting() {
-        const currentCode = editor.getValue();
-        
-        // Agar kod bo'sh bo'lsa
-        if (!currentCode.trim()) {
-            hideMagicWand();
-            return;
-        }
-        
-        // Agar kod tartiblangan bo'lsa
-        if (isCodeFormatted && currentCode === lastFormattedCode) {
-            hideMagicWand();
-            return;
-        }
-        
-        // Kod tartibsizligini tekshirish (oddiy qoida: bir qatorda > < belgilari orasida bo'shliq yo'qligi)
-        const hasUnformatted = /<[^>]+>[^<]+</.test(currentCode) || 
-                               currentCode.includes('>  <') ||
-                               /<[a-z]+[^>]*>[^\n]*<[^/]/.test(currentCode);
-        
-        // Qator uzunligi 100 dan oshgan qatorlar bormi
-        const lines = currentCode.split('\n');
-        const hasLongLines = lines.some(line => line.length > 100);
-        
-        if (hasUnformatted || hasLongLines) {
-            showMagicWand();
-        } else {
-            // Agar kod tartibli bo'lsa, tayoqchani yashirish va holatni yangilash
-            if (!isCodeFormatted) {
-                isCodeFormatted = true;
-                lastFormattedCode = currentCode;
-            }
-            hideMagicWand();
-        }
-    }
-    
-    // Bildirishnoma ko'rsatish
-    function showNotification(message, bgColor = "#10b981") {
-        const existing = document.querySelector('.notification-toast');
-        if (existing) existing.remove();
-        
-        const notif = document.createElement('div');
-        notif.className = 'notification-toast';
-        notif.textContent = message;
-        notif.style.background = bgColor;
-        document.body.appendChild(notif);
-        
-        setTimeout(() => notif.remove(), 3000);
-    }
-    
-    // Debounced tekshirish
-    let checkTimeout;
-    function debouncedCheck() {
-        clearTimeout(checkTimeout);
-        checkTimeout = setTimeout(checkCodeFormatting, 500);
-    }
-
     // 1. LOCAL STORAGE DAN O'QISH (Kodni tiklash)
     const savedCode = localStorage.getItem('codestudio_saved_code');
     if (savedCode) {
         editor.setValue(savedCode);
-        setTimeout(() => {
-            checkCodeFormatting();
-        }, 100);
     }
 
     window.triggerUndo = () => editor.undo();
@@ -762,6 +412,7 @@
         let asideWidth = aside.classList.contains('open') ? aside.offsetWidth + 12 : 0; 
         let newWidth = e.clientX - rect.left - asideWidth - 12; 
         
+        // Limitlar
         if (newWidth < 200) newWidth = 200; 
         let maxWidth = rect.width - asideWidth - 24 - 200; 
         if (newWidth > maxWidth) newWidth = maxWidth;
@@ -825,7 +476,7 @@
             const info = document.createElement('div');
             info.className = "card__info";
             info.innerHTML = `
-                <span class="card__title">${escapeHtml(item.name)}</span>
+                <span class="card__title">${item.name}</span>
                 <small style="color:${item.isPublic ? '#4ade80' : '#f87171'}">
                     ${item.isPublic ? '🌍 Ommaviy' : '🔒 Shaxsiy'}
                 </small>
@@ -848,8 +499,6 @@
             card.onclick = () => {
                 editor.setValue(item.code);
                 updatePreview();
-                isCodeFormatted = false;
-                setTimeout(() => checkCodeFormatting(), 100);
                 
                 if (window.innerWidth >= 900) {
                     if (!item.isPublic) {
@@ -865,12 +514,6 @@
             };
             list.appendChild(card);
         });
-    }
-    
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 
     // Auth & Utilities
@@ -893,10 +536,7 @@
     };
 
     window.addEventListener('load', () => { 
-        setTimeout(() => { 
-            document.getElementById('splash-screen').classList.add('hidden'); 
-            updatePreview(); 
-        }, 1500); 
+        setTimeout(() => { document.getElementById('splash-screen').classList.add('hidden'); updatePreview(); }, 1500); 
     });
 
     onAuthStateChanged(auth, u => {
@@ -907,7 +547,6 @@
         } else {
             user = null; 
             document.getElementById('login-screen').classList.remove('hidden');
-            hideMagicWand();
         }
     });
 
@@ -922,19 +561,11 @@
         });
     };
 
-    // 2. KODNI YOZGANDA LOCAL STORAGE GA SAQLASH VA TARTIBNI TEKSHIRISH
+    // 2. KODNI YOZGANDA LOCAL STORAGE GA SAQLASH
     editor.on('change', () => {
         updatePreview();
         const currentCode = editor.getValue();
-        localStorage.setItem('codestudio_saved_code', currentCode);
-        
-        // Formatlanganlik holatini tekshirish
-        if (currentCode !== lastFormattedCode) {
-            isCodeFormatted = false;
-        }
-        
-        debouncedCheck();
-        
+        localStorage.setItem('codestudio_saved_code', currentCode); // Local xotiraga yozish
         if(user) set(ref(rtdb, `drafts/${user.uid}`), { code: currentCode, t: Date.now() });
     });
 
@@ -962,7 +593,6 @@
         
         toggleModal(false);
         document.getElementById('repo-name').value = '';
-        showNotification("✅ Loyiha saqlandi!", "#10b981");
     };
     
     window.logout = () => signOut(auth);
