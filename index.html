@@ -12,9 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* =========================================
-           1. VARIABLES (O'ZGARUVCHILAR)
-        ========================================= */
+        /* Barcha CSS kodlar bir xil qoladi - yuqoridagi kabi */
         :root {
             --bg-main: #030712;
             --bg-glass: rgba(17, 24, 39, 0.7);
@@ -41,9 +39,6 @@
             --z-splash: 100000;
         }
 
-        /* =========================================
-           2. BASE & RESET
-        ========================================= */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         
         html, body { 
@@ -58,7 +53,6 @@
             z-index: -2;
         }
 
-        /* Maxsus Scrollbar (IDE uchun judayam muhim) */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
@@ -69,9 +63,6 @@
 
         svg { width: 1.25rem; height: 1.25rem; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* =========================================
-           3. UI COMPONENTS (TUGMALAR, INPUTLAR)
-        ========================================= */
         .text-gradient {
             background: linear-gradient(90deg, #60a5fa, #a855f7);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -119,11 +110,6 @@
             border-bottom: 1px solid var(--border-glass);
         }
 
-        /* =========================================
-           4. LAYOUT & SCREENS
-        ========================================= */
-        
-        /* --- Splash Screen --- */
         #splash-screen {
             z-index: var(--z-splash); background: var(--bg-main); 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -133,12 +119,11 @@
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.05); opacity: 0.8; } }
         .animate-pulse { animation: pulse 2s infinite ease-in-out; }
         
-        /* --- Modal & Overlays --- */
         .overlay {
             position: fixed; inset: 0; display: flex; justify-content: center; align-items: center;
             z-index: var(--z-modal); 
             background: rgba(0, 0, 0, 0.4); 
-            backdrop-filter: blur(4px); /* Ozgina xiralik qo'shildi */
+            backdrop-filter: blur(4px);
             -webkit-backdrop-filter: blur(4px);
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
@@ -146,7 +131,7 @@
         
         .modal-box { 
             background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(6px); /* Karta orqasi ham yengil xira qilinadi */
+            backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             padding: 2.5rem; border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.1); 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 90%; max-width: 380px; text-align: center; 
@@ -155,7 +140,6 @@
         .spinner { animation: spin 1s linear infinite; display: none; width: 1rem; height: 1rem; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- Header --- */
         .header {
             height: 60px; background: rgba(17, 24, 39, 0.6); backdrop-filter: var(--blur);
             border-bottom: 1px solid var(--border-glass); padding: 0 1.25rem;
@@ -167,7 +151,6 @@
         .header__logo-container svg { width: 35px; height: 35px; }
         .header__actions { display: flex; gap: 0.5rem; }
 
-        /* --- Workspace (Mobil uchun default) --- */
         .workspace { position: relative; height: calc(100% - 120px); display: block; padding: 0; }
         .workspace__panel { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 0; border: none; opacity: 0; pointer-events: none; transition: opacity var(--transition); }
         .workspace__panel.active-view { opacity: 1; pointer-events: auto; z-index: var(--z-base); display: flex; }
@@ -175,7 +158,6 @@
         
         .resizer { display: none; }
 
-        /* --- Mobile Nav --- */
         .mobile-nav {
             position: fixed; bottom: 0; inset-inline: 0; height: 60px;
             background: rgba(17, 24, 39, 0.8); backdrop-filter: var(--blur); border-top: 1px solid var(--border-glass);
@@ -185,7 +167,6 @@
         .nav-item.active { color: var(--color-primary); }
         .nav-item span { font-size: 0.6rem; font-weight: bold; text-transform: uppercase; }
 
-        /* --- Fayl Menyusi & Kartochkalar --- */
         .tab-system { display: flex; background: rgba(0,0,0,0.4); margin: 0.75rem; border-radius: 0.5rem; padding: 0.25rem; }
         .tab-btn { flex: 1; padding: 0.5rem; border: none; background: transparent; color: var(--text-dim); cursor: pointer; font-size: 0.65rem; font-weight: 700; border-radius: 0.4rem; transition: all var(--transition); }
         .tab-btn.active { background: var(--color-primary); color: #fff; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
@@ -204,16 +185,12 @@
         .delete-btn { background: none; border: none; cursor: pointer; padding: 0.4rem; opacity: 0.6; transition: var(--transition); color: var(--color-danger); border-radius: 50%; }
         .delete-btn:hover { opacity: 1; background: var(--color-danger-bg); transform: scale(1.1); }
 
-        /* --- CodeMirror Overrides --- */
         .CodeMirror { height: 100% !important; flex: 1; font-size: 15px; background: transparent !important; }
         .CodeMirror-dialog { background: rgba(17, 24, 39, 0.95) !important; color: #fff !important; padding: 0.75rem !important; border-radius: 0.75rem !important; border: 1px solid var(--color-primary); box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: absolute; top: 10px; right: 10px; z-index: var(--z-dialog); }
         .CodeMirror-dialog input { background: rgba(0,0,0,0.5); border: 1px solid var(--border-glass); color: #fff; padding: 0.4rem 0.8rem; border-radius: 0.4rem; outline: none; margin-inline: 0.5rem; }
         .CodeMirror-dialog button { background: var(--border-glass); border: none; color: #fff; padding: 0.4rem 0.8rem; border-radius: 0.4rem; cursor: pointer; font-size: 0.75rem; transition: 0.2s;}
         .CodeMirror-dialog button:hover { background: var(--color-primary); }
 
-        /* =========================================
-           5. RESPONSIVE (DESKTOP)
-        ========================================= */
         .desktop-only { display: none; }
         
         @media (min-width: 900px) {
@@ -377,7 +354,54 @@
         theme: "dracula", 
         lineNumbers: true, 
         autoCloseTags: true, 
-        lineWrapping: true
+        lineWrapping: true,
+        extraKeys: {
+            // MATEMATIK HISOBLASH FUNKSIYASI
+            "Enter": function(cm) {
+                const cursor = cm.getCursor();
+                const line = cm.getLine(cursor.line);
+                
+                // Joriy qatordagi oxirgi matematik ifodani topish
+                const mathRegex = /([\d\s\+\-\*\/\(\)\.\%]+)$/;
+                const match = line.match(mathRegex);
+                
+                if (match) {
+                    const expression = match[1].trim();
+                    
+                    if (expression.length > 0 && /[\+\-\*\/]/.test(expression)) {
+                        try {
+                            // Xavfsiz hisoblash
+                            const result = Function('"use strict"; return (' + expression + ')')();
+                            
+                            if (isFinite(result) && !isNaN(result)) {
+                                // Ifoda boshlangan pozitsiyani topish
+                                const startPos = line.length - match[1].length;
+                                
+                                // Ifodani o'chirib, natijani yozish
+                                cm.replaceRange(
+                                    result.toString(),
+                                    { line: cursor.line, ch: startPos },
+                                    { line: cursor.line, ch: line.length }
+                                );
+                                
+                                // Keyingi qatorga o'tish
+                                cm.replaceRange('\n', { line: cursor.line, ch: result.toString().length });
+                                
+                                // Kursorni keyingi qatorga joylash
+                                cm.setCursor({ line: cursor.line + 1, ch: 0 });
+                                
+                                return; // Oddiy Enter ishlamasin
+                            }
+                        } catch (e) {
+                            // Xato bo'lsa, oddiy Enter ishlaydi
+                        }
+                    }
+                }
+                
+                // Agar matematik ifoda bo'lmasa yoki xato bo'lsa, oddiy Enter
+                cm.replaceSelection('\n');
+            }
+        }
     });
 
     // 1. LOCAL STORAGE DAN O'QISH (Kodni tiklash)
