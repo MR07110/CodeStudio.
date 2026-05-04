@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Code Studio</title>
+    <title>Code Studio Pro - AI Calculator</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='-10 -10 120 120' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3ClinearGradient id='fGrad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%2360a5fa' /%3E%3Cstop offset='100%25' style='stop-color:%23a855f7' /%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='48' stroke='url(%23fGrad)' stroke-width='10' /%3E%3Cpath d='M30 35L12 50L30 65M70 35L88 50L70 65' stroke='url(%23fGrad)' stroke-width='12' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M58 25L42 75' stroke='url(%23fGrad)' stroke-width='12' stroke-linecap='round'/%3E%3C/svg%3E">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.15/codemirror.min.css">
@@ -12,31 +12,27 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Barcha CSS kodlar bir xil qoladi - yuqoridagi kabi */
         :root {
             --bg-main: #030712;
             --bg-glass: rgba(17, 24, 39, 0.7);
             --bg-glass-light: rgba(255, 255, 255, 0.05);
             --border-glass: rgba(255, 255, 255, 0.1);
-            
             --color-primary: #3b82f6;
             --color-primary-hover: #2563eb;
             --color-primary-glow: rgba(59, 130, 246, 0.4);
             --color-danger: #ef4444;
             --color-danger-bg: rgba(239, 68, 68, 0.1);
-            
             --text-main: #f3f4f6;
             --text-dim: #9ca3af;
-            
             --blur: blur(20px);
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            
             --z-base: 10;
             --z-dialog: 100;
             --z-header: 1000;
             --z-nav: 2000;
             --z-modal: 10000;
             --z-splash: 100000;
+            --z-fullscreen: 99999;
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -78,13 +74,10 @@
         .btn:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
         .btn:active { transform: scale(0.95); }
         .btn--icon { padding: 0.5rem; }
-        
         .btn--primary { background: var(--color-primary); border: none; box-shadow: 0 4px 15px var(--color-primary-glow); }
         .btn--primary:hover { background: var(--color-primary-hover); box-shadow: 0 6px 20px var(--color-primary-glow); }
-        
         .btn--danger { color: var(--color-danger); border-color: var(--color-danger-bg); }
         .btn--danger:hover { background: var(--color-danger-bg); }
-
         .btn--full { width: 100%; margin-block-start: 1rem; }
 
         .input-field {
@@ -121,17 +114,14 @@
         
         .overlay {
             position: fixed; inset: 0; display: flex; justify-content: center; align-items: center;
-            z-index: var(--z-modal); 
-            background: rgba(0, 0, 0, 0.4); 
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
+            z-index: var(--z-modal); background: rgba(0, 0, 0, 0.4); 
+            backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
             transition: opacity 0.4s ease, visibility 0.4s ease;
         }
         .overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
         
         .modal-box { 
-            background: rgba(255, 255, 255, 0.05); 
-            backdrop-filter: blur(6px);
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(6px);
             -webkit-backdrop-filter: blur(6px);
             padding: 2.5rem; border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.1); 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 90%; max-width: 380px; text-align: center; 
@@ -149,7 +139,18 @@
         .header__logo-container { display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform var(--transition); }
         .header__logo-container:hover { transform: rotate(10deg) scale(1.1); }
         .header__logo-container svg { width: 35px; height: 35px; }
-        .header__actions { display: flex; gap: 0.5rem; }
+        .header__actions { display: flex; gap: 0.5rem; align-items: center; }
+
+        .ai-badge {
+            background: linear-gradient(135deg, #60a5fa, #a855f7);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin-left: 0.5rem;
+            animation: pulse 2s infinite;
+        }
 
         .workspace { position: relative; height: calc(100% - 120px); display: block; padding: 0; }
         .workspace__panel { position: absolute; inset: 0; width: 100%; height: 100%; border-radius: 0; border: none; opacity: 0; pointer-events: none; transition: opacity var(--transition); }
@@ -191,22 +192,69 @@
         .CodeMirror-dialog button { background: var(--border-glass); border: none; color: #fff; padding: 0.4rem 0.8rem; border-radius: 0.4rem; cursor: pointer; font-size: 0.75rem; transition: 0.2s;}
         .CodeMirror-dialog button:hover { background: var(--color-primary); }
 
+        .editor-fullscreen {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: var(--z-fullscreen) !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+        }
+        .preview-fullscreen {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            z-index: var(--z-fullscreen) !important;
+            border-radius: 0 !important;
+        }
+        .fullscreen-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: calc(var(--z-fullscreen) - 1);
+        }
+        .fullscreen-backdrop.active { display: block; }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-primary);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 99999;
+            animation: slideUp 0.3s ease, fadeOut 0.3s ease 2s forwards;
+            pointer-events: none;
+        }
+        @keyframes slideUp {
+            from { transform: translateX(-50%) translateY(20px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+        }
+
         .desktop-only { display: none; }
         
         @media (min-width: 900px) {
             .desktop-only { display: inline-flex !important; }
             .mobile-nav { display: none; }
-            
             .workspace { height: calc(100% - 60px); display: flex; padding: 0.75rem; gap: 0; }
-            
             .workspace__panel { position: relative; border-radius: 1rem; border: 1px solid var(--border-glass); opacity: 1; pointer-events: auto; transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s; }
-            
             #view-files { width: 0; opacity: 0; pointer-events: none; border: none; margin-right: 0; }
             #view-files.open { width: 300px; opacity: 1; pointer-events: auto; border: 1px solid var(--border-glass); margin-right: 0.75rem; flex-shrink: 0; }
             #view-files > div { min-width: 300px; }
             #editor-container { width: 50%; flex: none; }
             #preview-container { flex: 1; min-width: 0; }
-            
             .resizer { display: flex; width: 16px; cursor: col-resize; justify-content: center; align-items: center; z-index: var(--z-base); user-select: none; }
             .resizer::after { content: ''; width: 4px; height: 40px; border-radius: 2px; background: rgba(255, 255, 255, 0.15); transition: background var(--transition), height 0.3s; }
             .resizer:hover::after, .resizer.active::after { background: var(--color-primary); height: 60px; box-shadow: 0 0 10px var(--color-primary-glow); }
@@ -228,18 +276,16 @@
         <path d="M65 35L80 50L65 65" stroke="url(#codeGradSplash)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
         <path d="M55 30L45 70" stroke="url(#codeGradSplash)" stroke-width="7" stroke-linecap="round"/>
     </svg>
-    <div class="text-gradient" style="font-size:2.2rem; font-weight:800; letter-spacing:3px; margin-top:1.5rem;">CODE STUDIO</div>
-    <div style="margin-top:0.5rem; color:var(--text-dim); font-size:0.8rem; letter-spacing: 1px;">Ishchi muhit tayyorlanmoqda...</div>
+    <div class="text-gradient" style="font-size:2.2rem; font-weight:800; letter-spacing:3px; margin-top:1.5rem;">CODE STUDIO PRO</div>
+    <div style="margin-top:0.5rem; color:var(--text-dim); font-size:0.8rem;">AI Kalkulyator bilan...</div>
 </div>
 
 <div id="login-screen" class="overlay hidden" style="background: url('https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=2072') center/cover; z-index:9999;">
     <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.65); z-index: -1;"></div>
     <div class="modal-box">
-        <h2 class="text-gradient" style="font-weight:800; margin-bottom:1.5rem; letter-spacing:1px; text-shadow:0 2px 10px rgba(0,0,0,0.8);">TIZIMGA KIRISH</h2>
-        
+        <h2 class="text-gradient" style="font-weight:800; margin-bottom:1.5rem; letter-spacing:1px;">TIZIMGA KIRISH</h2>
         <input type="email" id="email" class="input-field" placeholder="Elektron manzil">
         <input type="password" id="password" class="input-field" placeholder="Parol (min. 6 belgi)">
-        
         <button class="btn btn--primary btn--full" onclick="authAction('login')" style="padding: 0.8rem;">
             <svg class="spinner" id="login-spinner" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="rgba(255,255,255,0.3)"></circle><path d="M12 2a10 10 0 0 1 10 10" stroke="#fff"></path></svg>
             <span id="login-text">KIRISH</span>
@@ -253,7 +299,7 @@
         <button class="btn btn--icon desktop-only" onclick="toggleSidebar()" title="Menyu" style="border: none; background: transparent;">
             <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
-        <div class="header__logo-container" title="Code Studio Home">
+        <div class="header__logo-container" title="Code Studio Pro">
             <svg viewBox="-10 -10 120 120" fill="none">
                 <circle cx="50" cy="50" r="46" stroke="url(#codeGradSplash)" stroke-width="6" />
                 <path d="M35 35L20 50L35 65" stroke="url(#codeGradSplash)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -262,10 +308,19 @@
             </svg>
         </div>
         <span class="text-gradient desktop-only">CODE STUDIO</span>
+        <span class="ai-badge desktop-only">AI</span>
     </div>
     
     <div class="header__actions">
-        <button class="btn btn--icon desktop-only" onclick="toggleLayout()" title="Oynani yashirish/ko'rsatish"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg></button>
+        <button class="btn btn--icon desktop-only" onclick="toggleEditorFullscreen()" title="Kodni to'liq ekran">
+            <svg viewBox="0 0 24 24"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+        </button>
+        <button class="btn btn--icon desktop-only" onclick="togglePreviewFullscreen()" title="Natijani to'liq ekran">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"></rect><polyline points="8 3 3 3 3 8"></polyline><polyline points="16 21 21 21 21 16"></polyline></svg>
+        </button>
+        <button class="btn btn--icon desktop-only" onclick="toggleLayout()" title="Oynani yashirish/ko'rsatish">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+        </button>
         <button class="btn btn--icon" onclick="editor.execCommand('find')" title="Qidirish"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></button>
         <button class="btn btn--icon" onclick="triggerUndo()" title="Orqaga"><svg viewBox="0 0 24 24"><path d="M3 7v6h6"></path><path d="M3 13a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 13"></path></svg></button>
         <button class="btn btn--icon" onclick="triggerRedo()" title="Oldinga"><svg viewBox="0 0 24 24"><path d="M21 7v6h-6"></path><path d="M21 13a9 9 0 1 1-9-9 9.75 9.75 0 0 1 6.74 2.74L21 13"></path></svg></button>
@@ -285,7 +340,10 @@
         <div id="repo-list" class="list-container"></div>
     </aside>
     <div class="panel workspace__panel active-view" id="editor-container">
-        <div class="panel__header">EDITOR <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></div>
+        <div class="panel__header">
+            <span>EDITOR <svg viewBox="0 0 24 24" style="display:inline; vertical-align:middle;"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></span>
+            <span style="font-size:0.6rem; color:#60a5fa;" id="ai-status">🧠 AI Active</span>
+        </div>
         <textarea id="editor"></textarea>
     </div>
     <div class="resizer" id="resizer"></div>
@@ -294,6 +352,8 @@
         <iframe id="preview"></iframe>
     </div>
 </div>
+
+<div class="fullscreen-backdrop" id="fullscreen-backdrop" onclick="exitFullscreen()"></div>
 
 <div class="mobile-nav">
     <div class="nav-item" onclick="switchView('view-files', this)"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg><span>Fayllar</span></div>
@@ -305,10 +365,9 @@
     <div class="modal-box">
         <h3 style="margin-top:0; color:#fff; margin-bottom: 1.5rem;">Kodni Saqlash</h3>
         <input type="text" id="repo-name" class="input-field" placeholder="Loyiha nomini kiriting">
-        
         <select id="repo-visibility" class="input-field">
-            <option value="public">🌍 Ommaviy (Barchaga ko'rinadi)</option>
-            <option value="private">🔒 Shaxsiy (Faqat o'zingizga)</option>
+            <option value="public">🌍 Ommaviy</option>
+            <option value="private">🔒 Shaxsiy</option>
         </select>
         <button class="btn btn--primary btn--full" onclick="saveRepo()" style="padding: 0.8rem;">SAQLASH</button>
         <button class="btn btn--full" onclick="toggleModal(false)" style="padding: 0.8rem; background: transparent;">BEKOR QILISH</button>
@@ -348,6 +407,143 @@
     let user = null;
     let allRepos = [];
 
+    // ============================================
+    // AI O'RGANISH TIZIMI (KENGAYTIRILGAN)
+    // ============================================
+    const AI = {
+        history: [],
+        contextBuffer: [],
+        currentSuffix: '',
+        currentPrefix: '',
+        maxHistory: 50,
+        fontBaseSize: 16, // Default font-size
+        
+        learnContext(fullLine, expression, result) {
+            const expIndex = fullLine.lastIndexOf(expression);
+            const afterExp = fullLine.substring(expIndex + expression.length).trim();
+            const beforeExp = fullLine.substring(0, expIndex).trim();
+            
+            // CSS xossalarini o'rganish (max-width:, padding:, va h.k.)
+            const cssPropMatch = beforeExp.match(/([a-zA-Z\-]+)\s*:\s*$/);
+            
+            // Agar CSS xossasi bo'lsa va natijaga px/rem/em qo'shilmagan bo'lsa
+            if (cssPropMatch) {
+                // Oldingi qiymatdan birlikni aniqlash
+                const prevValueMatch = beforeExp.match(/([\d\.]+)(px|rem|em|%|vh|vw)/);
+                let unit = 'px'; // default
+                
+                if (prevValueMatch) {
+                    unit = prevValueMatch[2];
+                }
+                
+                // Agarda avval rem/em ishlatilgan bo'lsa, o'sha birlikni qo'shish
+                if (unit === 'rem' || unit === 'em') {
+                    this.contextBuffer.push({ type: 'css-unit', value: unit, expression, result });
+                }
+            }
+            
+            // Suffix o'rganish
+            if (afterExp && /^[a-zA-Z%]+/.test(afterExp)) {
+                const suffix = afterExp.match(/^[a-zA-Z%]+/)[0];
+                this.contextBuffer.push({ type: 'suffix', value: suffix, expression, result });
+            }
+            
+            // 3x pattern analysis
+            if (this.contextBuffer.length >= 3) {
+                const lastThree = this.contextBuffer.slice(-3);
+                const allSameValue = lastThree.every(c => c.value === lastThree[0].value);
+                
+                if (allSameValue) {
+                    if (lastThree[0].type === 'suffix') {
+                        this.currentSuffix = lastThree[0].value;
+                        this.showToast(`🤖 Suffix o'rganildi: "${this.currentSuffix}"`);
+                    } else if (lastThree[0].type === 'css-unit') {
+                        this.currentSuffix = lastThree[0].value;
+                        this.showToast(`🤖 CSS birlik o'rganildi: "${this.currentSuffix}"`);
+                    }
+                }
+            }
+        },
+        
+        shouldAutoAppend() {
+            return this.currentSuffix && this.contextBuffer.length >= 3;
+        },
+        
+        getAutoSuffix() {
+            return this.currentSuffix;
+        },
+        
+        resetLearning() {
+            this.contextBuffer = [];
+            this.currentSuffix = '';
+            this.currentPrefix = '';
+        },
+        
+        showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        },
+        
+        saveToHistory(expression, result, context) {
+            this.history.push({ expression, result, context, timestamp: Date.now() });
+            if (this.history.length > this.maxHistory) {
+                this.history.shift();
+            }
+            localStorage.setItem('ai_calc_history', JSON.stringify(this.history.slice(-20)));
+        },
+        
+        loadHistory() {
+            const saved = localStorage.getItem('ai_calc_history');
+            if (saved) {
+                try {
+                    this.history = JSON.parse(saved);
+                } catch(e) {
+                    this.history = [];
+                }
+            }
+        },
+        
+        // Matematik ifodani qatordagi istalgan joydan topish
+        findMathExpression(line) {
+            // Bir nechta patternlarni tekshirish
+            
+            // 1. CSS xossasi: "max-width: 100/16" yoki "max-width: 100px/16" 
+            const cssPattern = /([a-zA-Z\-]+\s*:\s*)([\d\s\.\+\-\*\/\(\)]+)(px|rem|em|%|vh|vw)?$/;
+            const cssMatch = line.match(cssPattern);
+            if (cssMatch && cssMatch[2].includes('/')) {
+                return {
+                    type: 'css',
+                    prefix: cssMatch[1],
+                    expression: cssMatch[2].trim(),
+                    suffix: cssMatch[3] || '',
+                    fullMatch: cssMatch[0]
+                };
+            }
+            
+            // 2. Oddiy matematik ifoda: "100/16" qatorning istalgan joyida
+            const simpleMath = /.*?([\d]+[\s]*[\/\*\+\-][\s]*[\d]+([\s]*[\/\*\+\-][\s]*[\d]+)*).*$/;
+            const simpleMatch = line.match(simpleMath);
+            if (simpleMatch) {
+                const expr = simpleMatch[1].trim();
+                const exprIndex = line.lastIndexOf(expr);
+                return {
+                    type: 'inline',
+                    expression: expr,
+                    beforeExp: line.substring(0, exprIndex),
+                    afterExp: line.substring(exprIndex + expr.length),
+                    startPos: exprIndex
+                };
+            }
+            
+            return null;
+        }
+    };
+
+    AI.loadHistory();
+
     // CodeMirror Sozlamalari
     window.editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
         mode: "htmlmixed", 
@@ -356,55 +552,100 @@
         autoCloseTags: true, 
         lineWrapping: true,
         extraKeys: {
-            // MATEMATIK HISOBLASH FUNKSIYASI
             "Enter": function(cm) {
                 const cursor = cm.getCursor();
                 const line = cm.getLine(cursor.line);
+                const cursorCh = cursor.ch;
                 
-                // Joriy qatordagi oxirgi matematik ifodani topish
-                const mathRegex = /([\d\s\+\-\*\/\(\)\.\%]+)$/;
-                const match = line.match(mathRegex);
+                // Kursorning chap tomonidagi text
+                const textBeforeCursor = line.substring(0, cursorCh);
                 
-                if (match) {
-                    const expression = match[1].trim();
+                // Eng oxirgi matematik ifodani topish (kursor pozitsiyasiga qarab)
+                const mathPattern = /([\d\.]+)\s*([\/\*\+\-])\s*([\d\.]+(\s*[\/\*\+\-]\s*[\d\.]+)*)/g;
+                let lastMatch = null;
+                let match;
+                
+                while ((match = mathPattern.exec(textBeforeCursor)) !== null) {
+                    lastMatch = match;
+                }
+                
+                if (lastMatch) {
+                    const expression = lastMatch[0].trim();
+                    const expStartPos = lastMatch.index;
+                    const expEndPos = lastMatch.index + lastMatch[0].length;
                     
-                    if (expression.length > 0 && /[\+\-\*\/]/.test(expression)) {
+                    // Kursor shu ifodaning oxirida yoki undan keyin bo'lishi kerak
+                    if (cursorCh >= expEndPos) {
                         try {
-                            // Xavfsiz hisoblash
                             const result = Function('"use strict"; return (' + expression + ')')();
                             
                             if (isFinite(result) && !isNaN(result)) {
-                                // Ifoda boshlangan pozitsiyani topish
-                                const startPos = line.length - match[1].length;
+                                const formattedResult = Number.isInteger(result) ? result.toString() : parseFloat(result.toFixed(4)).toString();
                                 
-                                // Ifodani o'chirib, natijani yozish
+                                // CSS xossasini tekshirish
+                                const textBeforeExp = textBeforeCursor.substring(0, expStartPos);
+                                const cssPropMatch = textBeforeExp.match(/([a-zA-Z\-]+)\s*:\s*$/);
+                                
+                                let finalResult = formattedResult;
+                                
+                                // Agar CSS xossasi bo'lsa
+                                if (cssPropMatch) {
+                                    // Oldingi qatordagi yoki shu qatordagi birlikni topish
+                                    const beforeLine = line.substring(0, expStartPos);
+                                    const unitMatch = beforeLine.match(/([\d\.]+)(px|rem|em|%|vh|vw)/g);
+                                    
+                                    if (unitMatch) {
+                                        const lastUnit = unitMatch[unitMatch.length - 1];
+                                        const unitType = lastUnit.match(/(px|rem|em|%|vh|vw)/)[1];
+                                        
+                                        // px bo'lsa va AI rem o'rgangan bo'lsa, rem ga o'tkazish
+                                        if (AI.shouldAutoAppend() && (AI.getAutoSuffix() === 'rem' || AI.getAutoSuffix() === 'em')) {
+                                            finalResult += AI.getAutoSuffix();
+                                        } else {
+                                            finalResult += unitType;
+                                        }
+                                    } else if (AI.shouldAutoAppend()) {
+                                        finalResult += AI.getAutoSuffix();
+                                    }
+                                    // default: faqat raqam qoldirish
+                                } else if (AI.shouldAutoAppend()) {
+                                    finalResult += AI.getAutoSuffix();
+                                }
+                                
+                                // Ifodani natija bilan almashtirish
                                 cm.replaceRange(
-                                    result.toString(),
-                                    { line: cursor.line, ch: startPos },
-                                    { line: cursor.line, ch: line.length }
+                                    finalResult,
+                                    { line: cursor.line, ch: expStartPos },
+                                    { line: cursor.line, ch: expEndPos }
                                 );
                                 
-                                // Keyingi qatorga o'tish
-                                cm.replaceRange('\n', { line: cursor.line, ch: result.toString().length });
+                                AI.learnContext(line, expression, parseFloat(formattedResult));
+                                AI.saveToHistory(expression, formattedResult, 'inline');
                                 
-                                // Kursorni keyingi qatorga joylash
-                                cm.setCursor({ line: cursor.line + 1, ch: 0 });
-                                
-                                return; // Oddiy Enter ishlamasin
+                                // Kursorni natija oxiriga qo'yish
+                                const newCursorPos = expStartPos + finalResult.length;
+                                cm.setCursor({ line: cursor.line, ch: newCursorPos });
+                                return;
                             }
-                        } catch (e) {
-                            // Xato bo'lsa, oddiy Enter ishlaydi
+                        } catch(e) {
+                            // Xato - oddiy Enter
                         }
                     }
                 }
                 
-                // Agar matematik ifoda bo'lmasa yoki xato bo'lsa, oddiy Enter
+                // Oddiy Enter
                 cm.replaceSelection('\n');
+            },
+            
+            // Tab - AI o'rganishni reset qilish
+            "Ctrl-Shift-R": function() {
+                AI.resetLearning();
+                AI.showToast('🔄 AI o\'rganish tozalandi');
             }
         }
     });
 
-    // 1. LOCAL STORAGE DAN O'QISH (Kodni tiklash)
+    // Local storage'dan kodni yuklash
     const savedCode = localStorage.getItem('codestudio_saved_code');
     if (savedCode) {
         editor.setValue(savedCode);
@@ -413,13 +654,63 @@
     window.triggerUndo = () => editor.undo();
     window.triggerRedo = () => editor.redo();
 
-    // Resize Logic (Silliq tortish uchun)
+    // ============================================
+    // FULLSCREEN FUNKSIYALAR
+    // ============================================
+    let fullscreenState = null;
+    
+    window.toggleEditorFullscreen = () => {
+        const editorContainer = document.getElementById('editor-container');
+        const backdrop = document.getElementById('fullscreen-backdrop');
+        
+        if (fullscreenState === 'editor') {
+            editorContainer.classList.remove('editor-fullscreen');
+            backdrop.classList.remove('active');
+            fullscreenState = null;
+            setTimeout(() => editor.refresh(), 100);
+        } else {
+            editorContainer.classList.add('editor-fullscreen');
+            backdrop.classList.add('active');
+            fullscreenState = 'editor';
+            setTimeout(() => editor.refresh(), 100);
+        }
+    };
+    
+    window.togglePreviewFullscreen = () => {
+        const previewContainer = document.getElementById('preview-container');
+        const backdrop = document.getElementById('fullscreen-backdrop');
+        
+        if (fullscreenState === 'preview') {
+            previewContainer.classList.remove('preview-fullscreen');
+            backdrop.classList.remove('active');
+            fullscreenState = null;
+        } else {
+            previewContainer.classList.add('preview-fullscreen');
+            backdrop.classList.add('active');
+            fullscreenState = 'preview';
+        }
+    };
+    
+    window.exitFullscreen = () => {
+        if (fullscreenState === 'editor') {
+            toggleEditorFullscreen();
+        } else if (fullscreenState === 'preview') {
+            togglePreviewFullscreen();
+        }
+    };
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && fullscreenState) {
+            exitFullscreen();
+        }
+    });
+
+    // Resize Logic
     const resizer = document.getElementById('resizer');
     const editorContainer = document.getElementById('editor-container');
     const iframe = document.getElementById('preview');
     const aside = document.getElementById('view-files');
     const workspace = document.getElementById('workspace');
-
     let isResizing = false;
 
     resizer.addEventListener('mousedown', (e) => {
@@ -435,12 +726,9 @@
         const rect = workspace.getBoundingClientRect();
         let asideWidth = aside.classList.contains('open') ? aside.offsetWidth + 12 : 0; 
         let newWidth = e.clientX - rect.left - asideWidth - 12; 
-        
-        // Limitlar
         if (newWidth < 200) newWidth = 200; 
         let maxWidth = rect.width - asideWidth - 24 - 200; 
         if (newWidth > maxWidth) newWidth = maxWidth;
-        
         editorContainer.style.width = `${newWidth}px`;
         editor.refresh(); 
     });
@@ -550,7 +838,6 @@
         const e = document.getElementById('email').value;
         const p = document.getElementById('password').value;
         if(!e || !p) return alert("Email va parolni kiriting!");
-        
         toggleLoading(true);
         try {
             if(type === 'signup') await createUserWithEmailAndPassword(auth, e, p);
@@ -585,11 +872,10 @@
         });
     };
 
-    // 2. KODNI YOZGANDA LOCAL STORAGE GA SAQLASH
     editor.on('change', () => {
         updatePreview();
         const currentCode = editor.getValue();
-        localStorage.setItem('codestudio_saved_code', currentCode); // Local xotiraga yozish
+        localStorage.setItem('codestudio_saved_code', currentCode);
         if(user) set(ref(rtdb, `drafts/${user.uid}`), { code: currentCode, t: Date.now() });
     });
 
@@ -608,19 +894,22 @@
     window.saveRepo = async () => {
         const name = document.getElementById('repo-name').value;
         const isPublic = document.getElementById('repo-visibility').value === 'public'; 
-        
         if(!name) return alert("Iltimos loyiha nomini kiriting!");
-        
         await addDoc(collection(db, "repos"), { 
             uid: user.uid, name: name, code: editor.getValue(), isPublic: isPublic, time: Timestamp.now() 
         });
-        
         toggleModal(false);
         document.getElementById('repo-name').value = '';
     };
     
     window.logout = () => signOut(auth);
 
+    console.log('🚀 Code Studio Pro - AI Calculator tayyor!');
+    console.log('📝 Ishlash tartibi:');
+    console.log('  - Qatorning istalgan joyida 100/16 + Enter → natija');
+    console.log('  - max-width: 100/16 + Enter → max-width: 6.25rem (AI o\'rgansa)');
+    console.log('  - Oldingi birliklarni avtomatik aniqlash');
+    console.log('  - Ctrl+Shift+R → AI o\'rganishni tozalash');
 </script>
 </body>
 </html>
